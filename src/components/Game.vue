@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import Game from "@/components/Game.vue"
+import game from "@/game";
 </script>
 
 <template>
   <main>
-    <Game />
+    {{game}}
   </main>
 </template>
+
+<style scoped>
+
+</style>
