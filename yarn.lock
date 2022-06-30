@@ -560,22 +560,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:^0.141.0":
-  version: 0.141.0
-  resolution: "@types/three@npm:0.141.0"
-  dependencies:
-    "@types/webxr": "*"
-  checksum: b4d1fd19eec01a15374a9e0a181207f0b2a27df881f3cfc63ce167b36b214c6926d80ac0eeb80c365832f69e7180db514a859808150ece1c1503a4eb58d4ac1e
-  languageName: node
-  linkType: hard
-
-"@types/webxr@npm:*":
-  version: 0.4.0
-  resolution: "@types/webxr@npm:0.4.0"
-  checksum: 4388c18a5b08ef4aa97f2177d3d80d384c5557c4b06278215d46472585923128fb316353e5fb799d22ffe99be149af90d0c27c41cb3681e82228088e48b24184
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/eslint-plugin@npm:^5.0.0":
   version: 5.30.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.30.0"
@@ -3558,13 +3542,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:^0.142.0":
-  version: 0.142.0
-  resolution: "three@npm:0.142.0"
-  checksum: b920987cab222bea5fd657a498f8203546c6b613cee01d2e1a355c7e044204bbff6ef051641b026743a6d3d5261a988c84285039a94e4c94a959f1b3789ac682
-  languageName: node
-  linkType: hard
-
 "to-fast-properties@npm:^2.0.0":
   version: 2.0.0
   resolution: "to-fast-properties@npm:2.0.0"
@@ -3813,7 +3790,6 @@ __metadata:
   dependencies:
     "@rushstack/eslint-patch": ^1.1.0
     "@types/node": ^16.11.41
-    "@types/three": ^0.141.0
     "@vitejs/plugin-vue": ^2.3.3
     "@vue/eslint-config-prettier": ^7.0.0
     "@vue/eslint-config-typescript": ^11.0.0
@@ -3824,7 +3800,6 @@ __metadata:
     pinia: ^2.0.14
     pixi.js: ^6.4.2
     prettier: ^2.5.1
-    three: ^0.142.0
     typescript: ~4.7.4
     vite: ^2.9.12
     vue: ^3.2.37
