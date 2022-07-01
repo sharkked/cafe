@@ -13,7 +13,7 @@ import { RouterView } from "vue-router";
 </template>
 
 <style>
-@import "@/assets/base.css";
+@import "@/styles/base.css";
 
 #app {
   margin: 0 auto;

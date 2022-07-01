@@ -13,7 +13,7 @@ export class DebugInfo {
     this.info = [];
   }
 
-  watch(label: string, cb: () => number | void) {
+  watch(label: string, cb: () => void) {
     this.info.push({label: label, cb: cb})
   }
 

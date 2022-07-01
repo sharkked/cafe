@@ -1,4 +1,4 @@
-export interface KeyInput {
+export interface InputKey {
   value: string;
   isDown: boolean;
   isUp: boolean;
@@ -10,7 +10,7 @@ export interface KeyInput {
 }
 
 export function getKey(value: string) {
-  const key: KeyInput = {
+  const key: InputKey = {
     value: value,
     isDown: false,
     isUp: true,

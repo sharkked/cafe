@@ -1,17 +1,24 @@
 import {
   Application,
   Graphics,
-  Text,
+  Point,
 } from "pixi.js";
 import { World } from "./world";
-import { getKey } from "@/ts/keyboard";
+import { getKey } from "./keyboard";
 import { DebugInfo } from "./debugInfo";
+import { Player } from "./player";
+import { loadAssets } from "./loader";
+import { Tree } from "./tree";
+
+export interface GameConfig {
+  canvas?: HTMLCanvasElement | null;
+}
 
 export class Game {
   private app: Application;
 
-  constructor(canvas?: HTMLCanvasElement | null) {
-    let view: HTMLElement | null = canvas ?? null;
+  constructor(config: GameConfig) {
+    let view: HTMLElement | null = config.canvas ?? null;
 
     if (!view) {
       view = document.getElementById("game");
@@ -31,52 +38,54 @@ export class Game {
   }
 
   start() {
-    const world = new World(200, 200);
-    this.app.stage.addChild(world.container);
+    loadAssets(this.app.loader, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const debug = new DebugInfo();
+      this.app.stage.addChild(debug.text);
+  
+      let frameTime: number;
+      debug.watch("fps", () => Math.round(this.app.ticker.FPS) );
+  
+      const WORLD_WIDTH = 1000;
+      const WORLD_HEIGHT = 1000;
 
-    world.setCameraOffset(
-      this.app.renderer.screen.width / 2,
-      this.app.renderer.screen.height / 2,
-    );
+      const world = new World(WORLD_WIDTH, WORLD_HEIGHT);
+      this.app.stage.addChild(world.container);
+  
+      const player = new Player();
+      player.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+      world.utils.addObject(player);
 
-    world.utils.addCircle(0, 0, 50);
+      let i: number;
+      for (i = 0; i < 50; i++) {
+        const tree = new Tree();
+        tree.object.position = new Point(
+          Math.floor(Math.random() * ( WORLD_WIDTH + this.app.screen.width*2) - this.app.screen.width),
+          Math.floor(Math.random() * ( WORLD_HEIGHT + this.app.screen.height*2) - this.app.screen.height));
+        world.utils.addObject(tree);
+      }
+  
+      world.setCameraOffset(
+        this.app.screen.width / 2,
+        this.app.screen.height / 2,
+      );
 
-    const debug = new DebugInfo();
-    this.app.stage.addChild(debug.text);
-
-    debug.watch("camera x", () => -world.container.x);
-    debug.watch("camera y", () => -world.container.y);
-
-    const MOVE_SPEED = 5.0;
-
-    const moveLeft = getKey("a");
-    const moveRight = getKey("d");
-    const moveUp = getKey("w");
-    const moveDown = getKey("s");
-
-    const gr = new Graphics();
-    gr.lineStyle(1, 0xffffff);
-
-    world.container.addChild(gr);
-
-    gr.pivot.x = gr.width / 2;
-    gr.pivot.y = gr.height / 2;
-
-    debug.watch("player x", () => gr.x);
-    debug.watch("player y", () => gr.y);
-
-    let elapsed = 0.0;
-    this.app.ticker.add((delta) => {
-      elapsed += delta;
-      gr.clear();
-      gr.lineStyle(1, 0xffffff);
-      gr.drawCircle(0, 0, 30 + Math.cos(elapsed / 50));
-      gr.x += (+moveRight.isDown - +moveLeft.isDown) * MOVE_SPEED;
-      gr.y += (+moveDown.isDown - +moveUp.isDown) * MOVE_SPEED;
-
-      world.setCameraPos(gr.x, gr.y);
-
-      debug.updateText();
+      debug.watch("camera", () => `x: ${-world.container.x}  y: ${-world.container.y}`);
+      debug.watch("player", () => `x: ${player.position.x}  y: ${player.position.y}`);
+  
+      let elapsed = 0.0;
+      this.app.ticker.add((delta) => {
+        elapsed += delta;
+  
+        player.update(delta);
+  
+        world.setCameraPos(player.position.x, player.position.y);
+  
+        debug.updateText();
+      });
     });
   }
 }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { Game } from "@/ts/game";
+import type { bindExpression } from "@babel/types";
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 onMounted(() => {
-  const game = new Game(canvas?.value);
+  const game = new Game({ canvas: canvas?.value });
   game.start();
 });
 </script>
