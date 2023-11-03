@@ -21,13 +21,3 @@ onMounted(() => {
   />
   <ChatWindow></ChatWindow>
 </template>
-
-<style scoped>
-#game {
-
-}
-
-canvas:focus {
-
-}
-</style>
