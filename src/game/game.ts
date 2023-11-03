@@ -42,10 +42,19 @@ export class Game {
 
       debug.watch("fps", () => Math.round(this.app.ticker.FPS));
 
-      const WORLD_WIDTH = 1000;
-      const WORLD_HEIGHT = 1000;
+      const WORLD_WIDTH = 5000;
+      const WORLD_HEIGHT = 500;
 
       const world = new World(WORLD_WIDTH, WORLD_HEIGHT);
+
+      world.setViewportScale(2);
+      world.setViewportSize(this.app.screen.width, this.app.screen.height);
+      window.onresize = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        world.setViewportSize(this.app.screen.width, this.app.screen.height);
+      };
+
+      world.utils.addRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
       this.app.stage.addChild(world.stage);
 
       const player = new Player();
@@ -53,7 +62,7 @@ export class Game {
       world.utils.addObject(player);
 
       let i: number;
-      for (i = 0; i < 50; i++) {
+      for (i = 0; i < 30; i++) {
         const tree = new Tree();
         tree.object.position = new Point(
           Math.floor(Math.random() * WORLD_WIDTH),
@@ -62,13 +71,6 @@ export class Game {
         tree.object.zIndex = -tree.object.position.y;
         world.utils.addObject(tree);
       }
-
-      world.setViewportScale(2);
-
-      world.setCameraOffset(
-        this.app.screen.width / 2,
-        this.app.screen.height / 2,
-      );
 
       Input.zoom.in.press = () =>
         world.setViewportScale(world.getViewportScale() + 1);

@@ -9,40 +9,57 @@ export class World {
   public stage: Container;
   public utils: IWorldUtils;
 
-  private camScale: number;
-  private camOffset: Point;
+  private viewportScale: number;
+  private viewportSize: Point;
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
     this.stage = new Container();
     this.utils = WorldUtils(this.stage);
-    this.camOffset = new Point();
-    this.camScale = 1;
+    this.viewportSize = new Point();
+    this.viewportScale = 1;
   }
 
   setCameraPos(x: number, y: number) {
-    const xPos = x * this.camScale - this.camOffset.x;
-    const yPos = y * this.camScale - this.camOffset.y;
-    this.stage.x = -Math.round(
-      clamp(xPos, 0, this.width - this.camOffset.x * 0.5),
-    );
-    this.stage.y = -Math.round(
-      clamp(yPos, 0, this.height - this.camOffset.y * 0.5),
-    );
+    const xOffset = this.viewportSize.x * 0.5;
+    const yOffset = this.viewportSize.y * 0.5;
+
+    const xPos = x * this.viewportScale - xOffset;
+    const yPos = y * this.viewportScale - yOffset;
+
+    if (this.viewportSize.x > this.width * this.viewportScale) {
+      this.stage.x = Math.round(
+        (this.viewportSize.x - this.width * this.viewportScale) * 0.5,
+      );
+    } else {
+      this.stage.x = -Math.round(
+        clamp(xPos, 0, this.width * this.viewportScale - xOffset * 2),
+      );
+    }
+
+    if (this.viewportSize.y > this.height * this.viewportScale) {
+      this.stage.y = Math.round(
+        (this.viewportSize.y - this.height * this.viewportScale) * 0.5,
+      );
+    } else {
+      this.stage.y = -Math.round(
+        clamp(yPos, 0, this.height * this.viewportScale - yOffset * 2),
+      );
+    }
   }
 
-  setCameraOffset(x: number, y: number) {
-    this.camOffset.set(x, y);
+  setViewportSize(x: number, y: number) {
+    this.viewportSize.set(x, y);
   }
 
   getViewportScale() {
-    return this.camScale;
+    return this.viewportScale;
   }
 
   setViewportScale(n: number) {
     n = clamp(n, 1, 6);
-    this.camScale = n;
+    this.viewportScale = n;
     this.stage.scale.x = n;
     this.stage.scale.y = n;
   }

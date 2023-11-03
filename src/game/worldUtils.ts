@@ -3,6 +3,7 @@ import type { GameObject } from "./interfaces";
 
 export interface IWorldUtils {
   addDebug(): void;
+  addRect(x: number, y: number, w: number, h: number): void;
   addCircle(x: number, y: number, radius: number): void;
   addSprite(x: number, y: number, url: string): void;
   updateScale(): void;
@@ -17,6 +18,16 @@ export function WorldUtils(world: Container): IWorldUtils {
 
     addDebug() {
       console.log(1);
+    },
+
+    addRect(x, y, w, h) {
+      const rect = new Graphics();
+      rect.beginFill(0x111111);
+      rect.drawRect(0, 0, w, h);
+      rect.endFill();
+      rect.x = x;
+      rect.y = y;
+      world.addChild(rect);
     },
 
     addCircle(x, y, radius) {
