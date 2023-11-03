@@ -36,7 +36,6 @@ export class Game {
   async start() {
     try {
       const debug = new DebugInfo();
-      this.app.stage.addChild(debug.text);
 
       await Textures.preload();
 
@@ -82,6 +81,8 @@ export class Game {
         "player",
         () => `x: ${player.position.x}  y: ${player.position.y}`,
       );
+
+      this.app.stage.addChild(debug.text);
 
       this.app.ticker.add((delta) => {
         delta;
