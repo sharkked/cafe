@@ -16,6 +16,7 @@ import { RouterView } from "vue-router";
 @import "@/styles/base.css";
 
 #app {
+  height: 100%;
   margin: 0 auto;
   font-weight: normal;
 }

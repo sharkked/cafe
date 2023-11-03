@@ -11,20 +11,23 @@ export interface InputKey {
 
 export function getKey(value: string) {
   const key: InputKey = {
-    value: value,
+    value,
     isDown: false,
     isUp: true,
     downHandler: (event) => {
+      if (!Input.enabled) return;
+      event.preventDefault();
+
       if (event.key.toLowerCase() === key.value) {
         if (key.isUp && key.press) {
           key.press();
         }
         key.isDown = true;
         key.isUp = false;
-        event.preventDefault();
       }
     },
     upHandler: (event) => {
+      if (!Input.enabled) return;
       if (event.key.toLowerCase() === key.value) {
         if (key.isDown && key.release) {
           key.release();
@@ -48,4 +51,37 @@ export function getKey(value: string) {
   };
 
   return key;
+}
+
+export interface InputAction {
+  name: string;
+}
+
+export class Input {
+  static enabled = true;
+
+  static left = getKey("a");
+  static right = getKey("d");
+  static up = getKey("w");
+  static down = getKey("s");
+  static run = getKey("shift");
+
+  static zoom = {
+    in: getKey("o"),
+    out: getKey("p"),
+  };
+
+  static enable() {
+    this.enabled = true;
+  }
+
+  static disable() {
+    this.enabled = false;
+    this.left.isDown = false;
+    this.right.isDown = false;
+    this.up.isDown = false;
+    this.down.isDown = false;
+    this.zoom.in.isDown = false;
+    this.zoom.out.isDown = false;
+  }
 }

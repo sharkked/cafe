@@ -1,14 +1,10 @@
-import {
-  Application,
-  Graphics,
-  Point,
-} from "pixi.js";
+import { Application, Point } from "pixi.js";
 import { World } from "./world";
-import { getKey } from "./keyboard";
 import { DebugInfo } from "./debugInfo";
-import { Player } from "./player";
-import { loadAssets } from "./loader";
-import { Tree } from "./tree";
+import { Player } from "./objects/player";
+import { Tree } from "./objects/tree";
+import { Textures } from "./sprites";
+import { Input } from ".";
 
 export interface GameConfig {
   canvas?: HTMLCanvasElement | null;
@@ -37,24 +33,21 @@ export class Game {
     });
   }
 
-  start() {
-    loadAssets(this.app.loader, (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+  async start() {
+    try {
       const debug = new DebugInfo();
       this.app.stage.addChild(debug.text);
-  
-      let frameTime: number;
-      debug.watch("fps", () => Math.round(this.app.ticker.FPS) );
-  
+
+      await Textures.preload();
+
+      debug.watch("fps", () => Math.round(this.app.ticker.FPS));
+
       const WORLD_WIDTH = 1000;
       const WORLD_HEIGHT = 1000;
 
       const world = new World(WORLD_WIDTH, WORLD_HEIGHT);
-      this.app.stage.addChild(world.container);
-  
+      this.app.stage.addChild(world.stage);
+
       const player = new Player();
       player.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
       world.utils.addObject(player);
@@ -63,29 +56,50 @@ export class Game {
       for (i = 0; i < 50; i++) {
         const tree = new Tree();
         tree.object.position = new Point(
-          Math.floor(Math.random() * ( WORLD_WIDTH + this.app.screen.width*2) - this.app.screen.width),
-          Math.floor(Math.random() * ( WORLD_HEIGHT + this.app.screen.height*2) - this.app.screen.height));
+          Math.floor(Math.random() * WORLD_WIDTH),
+          Math.floor(Math.random() * WORLD_HEIGHT),
+        );
+        tree.object.zIndex = -tree.object.position.y;
         world.utils.addObject(tree);
       }
-  
+
+      world.setViewportScale(2);
+
       world.setCameraOffset(
         this.app.screen.width / 2,
         this.app.screen.height / 2,
       );
 
-      debug.watch("camera", () => `x: ${-world.container.x}  y: ${-world.container.y}`);
-      debug.watch("player", () => `x: ${player.position.x}  y: ${player.position.y}`);
-  
-      let elapsed = 0.0;
+      Input.zoom.in.press = () =>
+        world.setViewportScale(world.getViewportScale() + 1);
+      Input.zoom.out.press = () =>
+        world.setViewportScale(world.getViewportScale() - 1);
+
+      debug.watch("camera", () => `x: ${-world.stage.x}  y: ${-world.stage.y}`);
+      debug.watch(
+        "player",
+        () => `x: ${player.position.x}  y: ${player.position.y}`,
+      );
+
       this.app.ticker.add((delta) => {
-        elapsed += delta;
-  
-        player.update(delta);
-  
+        delta;
+
+        player.update();
+
         world.setCameraPos(player.position.x, player.position.y);
-  
+
+        world.stage.children.sort(function (a, b) {
+          if (a.position.y > b.position.y) return 1;
+          if (a.position.y < b.position.y) return -1;
+          if (a.position.x > b.position.x) return 1;
+          if (a.position.x < b.position.x) return -1;
+          return 0;
+        });
+
         debug.updateText();
       });
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
