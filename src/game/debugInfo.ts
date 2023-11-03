@@ -14,10 +14,12 @@ export class DebugInfo {
   }
 
   watch(label: string, cb: () => void) {
-    this.info.push({label: label, cb: cb})
+    this.info.push({ label: label, cb: cb });
   }
 
   updateText() {
-    this.text.text = this.info.map(it => `${it.label}: ${it.cb()}`).join('\n');
+    this.text.text = this.info
+      .map((it) => `${it.label}: ${it.cb()}`)
+      .join("\n");
   }
 }

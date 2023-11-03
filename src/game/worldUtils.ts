@@ -1,7 +1,4 @@
-import { 
-  Graphics, 
-  Container
-} from "pixi.js";
+import { Graphics, Container } from "pixi.js";
 import type { GameObject } from "./interfaces";
 
 export interface IWorldUtils {
@@ -12,7 +9,7 @@ export interface IWorldUtils {
   addObject(obj: GameObject): void;
 }
 
-export function WorldUtils(world: Container): IWorldUtils {  
+export function WorldUtils(world: Container): IWorldUtils {
   return {
     addObject(obj) {
       world.addChild(obj.object);
@@ -40,6 +37,6 @@ export function WorldUtils(world: Container): IWorldUtils {
 
     updateScale() {
       console.log(3);
-    }
-  }
+    },
+  };
 }
